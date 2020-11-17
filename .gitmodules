@@ -1,0 +1,3 @@
+[submodule "test_vencax_oauth/netlify-cms-github-oauth-provider"]
+	path = test_vencax_oauth/netlify-cms-github-oauth-provider
+	url = ./test_vencax_oauth
