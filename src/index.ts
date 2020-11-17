@@ -61,4 +61,7 @@ app.get('/callback', async (req: Request, res: Response) => {
 
 console.log(`server running on ${process.env.NIKOOAUTH_PORT}`);
 
-app.listen(parseInt(process.env.NIKOOAUTH_PORT as string));
+app.listen(
+    parseInt(process.env.NIKOOAUTH_PORT as string),
+    process.env.NIKOOAUTH_HOST as string
+);
