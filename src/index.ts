@@ -52,7 +52,7 @@ app.get('/', async (req: Request, res: Response) => {
                 console.log('receiveMessage %o', e);
                 // send message to main window with da app
                 window.opener.postMessage(
-                    'authorization:github:success:{"token":${token},"provider":"github"}',
+                    'authorization:github:success:{"token":"${token}","provider":"github"}',
                     e.origin
                 );
             }
