@@ -8,13 +8,13 @@ const app = express();
 const state = crypto.randomBytes(32).toString('hex');
 
 app.get('/auth', (req: Request, res: Response) => {
-    res.redirect(
-        `https://github.com/login/oauth/authorize?client_id=${
-            process.env.NIKOOAUTH_CLIENT_ID
-        }&redirect_uri=${process.env.NIKOOAUTH_YOUR_DOMAIN}&scope=${
-            req.query.scope || 'repo,user'
-        }&state=${state}`
-    );
+    const redirectUrl = `https://github.com/login/oauth/authorize?client_id=${
+        process.env.NIKOOAUTH_CLIENT_ID
+    }&redirect_uri=${process.env.NIKOOAUTH_YOUR_DOMAIN}&scope=${
+        req.query.scope || 'repo,user'
+    }&state=${state}`;
+    console.log('redirectUrl: ', redirectUrl);
+    res.redirect(redirectUrl);
 });
 
 app.get('/', async (req: Request, res: Response) => {
@@ -24,10 +24,10 @@ app.get('/', async (req: Request, res: Response) => {
     }
 
     let token;
+    const accessTokenReqUrl = `https://github.com/login/oauth/access_token?client_id=${process.env.NIKOOAUTH_CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&code=${req.query.code}&state=${state}`;
+    console.log(accessTokenReqUrl);
     try {
-        let accessTokenRes = await axios.post<string>(
-            `https://github.com/login/oauth/access_token?client_id=${process.env.NIKOOAUTH_CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&code=${req.query.code}&state=${state}`
-        );
+        let accessTokenRes = await axios.post<string>(accessTokenReqUrl);
 
         let data = qs.parse(accessTokenRes.data);
         if (data.error) {
