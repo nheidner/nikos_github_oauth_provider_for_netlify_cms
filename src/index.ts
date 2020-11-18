@@ -11,7 +11,7 @@ app.get('/auth', (req: Request, res: Response) => {
     res.redirect(
         `https://github.com/login/oauth/authorize?client_id=${
             process.env.NIKOOAUTH_CLIENT_ID
-        }&redirect_uri=${process.env.NIKOOAUTH_YOUR_DOMAIN}/callback&scope=${
+        }&redirect_uri=${process.env.NIKOOAUTH_YOUR_DOMAIN}&scope=${
             req.query.scope || 'repo,user'
         }&state=${state}`
     );
