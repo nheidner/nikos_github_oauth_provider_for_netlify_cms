@@ -25,7 +25,7 @@ app.get('/', async (req: Request, res: Response) => {
 
     let token;
     const accessTokenReqUrl = `https://github.com/login/oauth/access_token?client_id=${process.env.NIKOOAUTH_CLIENT_ID}&client_secret=${process.env.NIKOOAUTH_CLIENT_SECRET}&code=${req.query.code}&state=${state}`;
-    console.log(accessTokenReqUrl);
+    console.log('accessTokenReqUrl: ', accessTokenReqUrl);
     try {
         let accessTokenRes = await axios.post<string>(accessTokenReqUrl);
 
@@ -43,12 +43,24 @@ app.get('/', async (req: Request, res: Response) => {
         console.log('err: ', err);
         return;
     }
-    console.log(token);
+    console.log('token: ', token);
 
     const script = `
     <script>
         (function() {
-            console.log(window.opener)
+            function receiveMessage(e) {
+                console.log('receiveMessage %o', e);
+                // send message to main window with da app
+                window.opener.postMessage(
+                    'authorization:github:success:{"token":${token},"provider":"github"}',
+                    e.origin
+                );
+            }
+            window.addEventListener('message', receiveMessage, false);
+            // Start handshare with parent
+            console.log(window.opener);
+            console.log('Sending message: %o', 'github');
+            window.opener.postMessage('authorizing:github', '*');
         })()
     </script>`;
 
