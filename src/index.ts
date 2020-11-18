@@ -24,7 +24,7 @@ app.get('/', async (req: Request, res: Response) => {
     }
 
     let token;
-    const accessTokenReqUrl = `https://github.com/login/oauth/access_token?client_id=${process.env.NIKOOAUTH_CLIENT_ID}&client_secret=${process.env.CLIENT_SECRET}&code=${req.query.code}&state=${state}`;
+    const accessTokenReqUrl = `https://github.com/login/oauth/access_token?client_id=${process.env.NIKOOAUTH_CLIENT_ID}&client_secret=${process.env.NIKOOAUTH_CLIENT_SECRET}&code=${req.query.code}&state=${state}`;
     console.log(accessTokenReqUrl);
     try {
         let accessTokenRes = await axios.post<string>(accessTokenReqUrl);
