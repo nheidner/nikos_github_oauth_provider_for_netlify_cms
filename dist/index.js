@@ -222,5 +222,8 @@ app.get('/callback', function (req, res) {
     });
 });
 console.log('server running on ' + process.env.NIKOOAUTH_PORT);
-app.listen(parseInt(process.env.NIKOOAUTH_PORT), process.env.NIKOOAUTH_HOST);
+app.listen(
+    parseInt(process.env.NIKOOAUTH_PORT),
+    process.env.NIKOOAUTH_HOST === '' ? undefined : process.env.NIKOOAUTH_HOST
+);
 //# sourceMappingURL=index.js.map

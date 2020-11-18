@@ -7,10 +7,6 @@ import qs from 'querystring';
 const app = express();
 const state = crypto.randomBytes(32).toString('hex');
 
-app.get('/', (req: Request, res: Response) => {
-    res.send(req.headers);
-});
-
 app.get('/auth', (req: Request, res: Response) => {
     res.redirect(
         `https://github.com/login/oauth/authorize?client_id=${
@@ -21,7 +17,7 @@ app.get('/auth', (req: Request, res: Response) => {
     );
 });
 
-app.get('/callback', async (req: Request, res: Response) => {
+app.get('/', async (req: Request, res: Response) => {
     if (req.query.state !== state) {
         res.status(500).send('Login failed');
         process.exit();
