@@ -5,6 +5,7 @@ import axios from 'axios';
 import qs from 'querystring';
 
 const app = express();
+
 const state = crypto.randomBytes(32).toString('hex');
 
 app.get('/auth', (req: Request, res: Response) => {
@@ -13,19 +14,17 @@ app.get('/auth', (req: Request, res: Response) => {
     }&redirect_uri=${process.env.NIKOOAUTH_YOUR_DOMAIN}&scope=${
         req.query.scope || 'repo,user'
     }&state=${state}`;
-    console.log('redirectUrl: ', redirectUrl);
     res.redirect(redirectUrl);
 });
 
 app.get('/', async (req: Request, res: Response) => {
     if (req.query.state !== state) {
         res.status(500).send('Login failed');
-        process.exit();
+        return;
     }
 
     let token;
     const accessTokenReqUrl = `https://github.com/login/oauth/access_token?client_id=${process.env.NIKOOAUTH_CLIENT_ID}&client_secret=${process.env.NIKOOAUTH_CLIENT_SECRET}&code=${req.query.code}&state=${state}`;
-    console.log('accessTokenReqUrl: ', accessTokenReqUrl);
     try {
         let accessTokenRes = await axios.post<string>(accessTokenReqUrl);
 
@@ -36,22 +35,23 @@ app.get('/', async (req: Request, res: Response) => {
                     ? data.error
                     : 'Login failed'
             );
-            process.exit();
+            return;
         }
         token = data.access_token as string;
     } catch (err: any) {
         console.log('err: ', err);
         return;
     }
-    console.log('token: ', token);
 
     const script = `
     <script>
         (function() {
             function receiveMessage(e) {
-                console.log('receiveMessage %o', e);
-                // send message to main window with da app
-                window.opener.postMessage(
+                if (e.source !== window.opener) {
+                    return;
+                }
+                // send message to main window
+                e.source.postMessage(
                     'authorization:github:success:{"token":"${token}","provider":"github"}',
                     e.origin
                 );
