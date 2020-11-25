@@ -44,8 +44,8 @@ app.get('/', async (req: Request, res: Response) => {
         if (data.error) {
             res.status(500).send(
                 process.env.NIKOOAUTH_NODE_ENV !== 'production'
-                    ? data.error
-                    : 'Login failed'
+                    ? 'Login failed'
+                    : data.error
             );
             return;
         }
