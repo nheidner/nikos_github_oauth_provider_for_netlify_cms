@@ -21,7 +21,7 @@ app.get('/auth', (req: Request, res: Response) => {
     }&redirect_uri=${process.env.NIKOOAUTH_YOUR_DOMAIN}&scope=${
         req.query.scope || 'repo,user'
     }&state=${state}`;
-    console.log(redirectUrl);
+
     res.cookie('state', state, {
         ...cookieOptions,
         maxAge: 1000 * 60 * 30,
